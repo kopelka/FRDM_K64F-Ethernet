@@ -1,6 +1,8 @@
 # Prerequisites
 *.d
-
+BUILD/
+*.Kasia
+*.uvoptx
 # Compiled Object files
 *.slo
 *.lo

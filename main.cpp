@@ -1,9 +1,7 @@
 #include "mbed.h"
 #include "EthernetInterface.h"
-//#include "fsl_phy_driver.h"
-//#include "k64f_emac_config.h"
 #include "fsl_enet_driver.h"
-#include "fsl_enet_hal.h"
+
  
 #define MBED_DEV_IP       "192.168.0.52"
 #define MBED_DEV_MASK     "255.255.255.0"
@@ -54,10 +52,10 @@ void baud(int baudrate) {
     s.baud(baudrate);
 }
 
- uint32_t mii_read_data(void)
+ uint32_t mii_read_data(uint32_t phyReg, uint32_t *dataPtr)
 {
 	//uint32_t instance, uint32_t phyAddr, uint32_t phyReg, uint32_t *dataPtr
-    return enet_mii_read(0,0,kEnetPhyCt2, &data);
+    return enet_mii_read(0,0,phyReg,dataPtr);
 }
 //
 //bool get_link_status(void)
@@ -65,28 +63,30 @@ void baud(int baudrate) {
 //    return (lpc_mii_read_data() & DP8_VALID_LINK) ? true : false;
 //}
 // 
-int get_connection_speed()
+int get_connection_speed(uint32_t phyReg, uint32_t *dataPtr)
 {
-	printf("DATA %d",data);	
-	mii_read_data();
-	printf("DATA %d",data);	
-	data &=kEnetPhySpeedDulpexMask;
-	printf("DATA %d",data);	
-    return (data & kEnetPhy10FullDuplex) ? 10  : 100 ;
+	mii_read_data(phyReg,dataPtr);
+	data &=kEnetPhySpeedDulpexMask;	
+  if ((kEnetPhy100HalfDuplex == data) || (kEnetPhy100FullDuplex == data))
+   {
+      return 100;
+   }
+
+    return 10  ;
 }
  
 int main (void) {
 int speed;
 		baud(115200);
 	printf ("Hello World! Enter task number:\n");
-	//onCharReceived();
-	//switch(c){
-	//	case '1': 
-	//		printf("LEts find out about RJ-45 socket diodes");
-	//		break;
-	//	case '2': break;
-	//	default: break;
-	//}       
+	onCharReceived();
+	switch(c){
+		case '1': 
+			printf("LEts find out about RJ-45 socket diodes");
+			break;
+		case '2': break;
+		default: break;
+	}       
 
 		
     EthernetInterface eth;
@@ -95,7 +95,7 @@ int speed;
 	
 		printf("Connecting to network...\r\n");
    if (0 == eth.connect()) { 
-		 speed = get_connection_speed();
+		 speed = get_connection_speed(kEnetPhyCt2, &data);
 			printf("Connected at %d Mb/s\r\n", speed);
     //printf("IP Address is %s\n", eth.getIPAddress());
 	 }

@@ -76,17 +76,17 @@ int get_connection_speed()
 }
  
 int main (void) {
-
+int speed;
 		baud(115200);
 	printf ("Hello World! Enter task number:\n");
-	onCharReceived();
-	switch(c){
-		case '1': 
-			printf("LEts find out about RJ-45 socket diodes");
-			break;
-		case '2': break;
-		default: break;
-	}       
+	//onCharReceived();
+	//switch(c){
+	//	case '1': 
+	//		printf("LEts find out about RJ-45 socket diodes");
+	//		break;
+	//	case '2': break;
+	//	default: break;
+	//}       
 
 		
     EthernetInterface eth;
@@ -95,7 +95,7 @@ int main (void) {
 	
 		printf("Connecting to network...\r\n");
    if (0 == eth.connect()) { 
-		 int speed = get_connection_speed();
+		 speed = get_connection_speed();
 			printf("Connected at %d Mb/s\r\n", speed);
     //printf("IP Address is %s\n", eth.getIPAddress());
 	 }
@@ -126,3 +126,4 @@ int main (void) {
        client.close();
     }
 }
+

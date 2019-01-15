@@ -54,7 +54,6 @@ public:
   */
   static int connect(unsigned int timeout_ms=15000);
   
-	static uint32_t getStatus();
   /** Disconnect
   * Bring the interface down
   * \return 0 on success, a negative number on failure
